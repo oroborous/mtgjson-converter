@@ -10,7 +10,7 @@ These files are too large for GitHub, so they must be downloaded and placed in t
 just for reference.
 
 ## Sample Output
-After running CardConverter.java, a CSV file (`mtg.csv`) is produced in the top project directory.
+After running CardConverter.java, a CSV file (`mtg.csv`) is produced in the top project directory. It contains a comma-delimited header row, followed by one card per row.
 <pre>
 title,red,green,white,black,blue,numColors,instant,artifact,planeswalker,sorcery,creature,enchantment,land,edhrecRank,reserved,reprinted,manaValue,power,toughness,firstPrintingSetName,firstPrintingSetCode,firstPrintingDate
 "Black Lotus",false,false,false,false,false,0,false,true,false,false,false,false,false,0,false,true,0.000000,-1,-1,Limited Edition Alpha,LEA,1993-08-05

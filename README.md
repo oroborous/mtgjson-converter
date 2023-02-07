@@ -40,7 +40,10 @@ just for reference.
 After running CardConverter.java, a CSV file (`mtg.csv`) is produced in the top project directory.
 <pre>
 title,red,green,white,black,blue,numColors,instant,artifact,planeswalker,sorcery,creature,enchantment,land,edhrecRank,reserved,reprinted,manaValue,power,toughness,firstPrintingSetName,firstPrintingSetCode,firstPrintingDate
+"Black Lotus",false,false,false,false,false,0,false,true,false,false,false,false,false,0,false,true,0.000000,-1,-1,Limited Edition Alpha,LEA,1993-08-05
 "Prodigal Sorcerer",false,false,false,false,true,1,false,false,false,false,true,false,false,7326,false,true,3.000000,1,1,Limited Edition Alpha,LEA,1993-08-05
+"Serra Angel",false,false,true,false,false,1,false,false,false,false,true,false,false,8330,false,true,5.000000,4,4,Limited Edition Alpha,LEA,1993-08-05
+"Waiting in the Weeds",false,true,false,false,false,1,false,false,false,true,false,false,false,13630,false,true,3.000000,-1,-1,Mirage,MIR,1996-10-08
 </pre>
 
 ## Assumptions and Exclusions

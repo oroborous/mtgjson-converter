@@ -3,3 +3,4 @@
 /src/main/resources/com/javapuppy/mtgjson/AllPrintings.json
 /src/main/resources/com/javapuppy/mtgjson/AtomicCards.json
 /.idea/
+/mtg.csv

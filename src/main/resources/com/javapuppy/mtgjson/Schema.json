@@ -1,0 +1,115 @@
+{
+  "atomicCards": {
+    "meta": {
+      "date": "2023-01-20",
+      "version": "5.2.0+20230120"
+    },
+    "data": {
+      "\"Awaken the Sleeper\"": [
+        {
+          "colorIdentity": [
+            "R"
+          ],
+          "colors": [
+            "R"
+          ],
+          "convertedManaCost": 4.0,
+          "foreignData": [],
+          "identifiers": {
+            "scryfallOracleId": "d4df1710-7402-45a7-966f-b51ddc087fbe"
+          },
+          "layout": "normal",
+          "legalities": {},
+          "manaCost": "{3}{R}",
+          "manaValue": 4.0,
+          "name": "\"Awaken the Sleeper\"",
+          "printings": [
+            "ONE"
+          ],
+          "purchaseUrls": {},
+          "rulings": [],
+          "subtypes": [],
+          "supertypes": [],
+          "text": "Gain control of target creature until end of turn. Untap that creature. Until end of it, it gains haste. If it's equipped, you may destroy all Equipment attached to it.",
+          "type": "Sorcery",
+          "types": [
+            "Sorcery"
+          ]
+        }
+      ],
+      "\"Axe of the Bestagon\"": [
+        {
+          "colorIdentity": [
+            "R"
+          ],
+          "colors": [
+            "R"
+          ],
+          "convertedManaCost": 2.0,
+          "foreignData": [],
+          "identifiers": {
+            "scryfallOracleId": "c43b176a-9001-4fe4-bd9b-809880134067"
+          },
+          "keywords": [
+            "Equip"
+          ],
+          "layout": "normal",
+          "legalities": {},
+          "manaCost": "{1}{R}",
+          "manaValue": 2.0,
+          "name": "\"Axe of the Bestagon\"",
+          "printings": [
+            "ONE"
+          ],
+          "purchaseUrls": {},
+          "rulings": [],
+          "subtypes": [
+            "Equipment"
+          ],
+          "supertypes": [],
+          "text": "For Mirrodin! (When this Equipment enters the battlefield, create a 2/2 red Rebel creature token, then attach this to it.)\nAs long as it's your turn, equipped creature has first strike and trample.\nEquip {2}{R}",
+          "type": "Artifact — Equipment",
+          "types": [
+            "Artifact"
+          ]
+        }
+      ]
+    }
+  },
+  "allPrintings": {
+    "meta": {
+      "date": "2023-01-20",
+      "version": "5.2.0+20230120"
+    },
+    "data": {
+      "10E": {
+        "baseSetSize": 383,
+        "block": "Core Set",
+        "cardsphereSetId": 755,
+        "code": "10E",
+        "isForeignOnly": true,
+        "isNonFoilOnly": true,
+        "isOnlineOnly": false,
+        "keyruneCode": "10E",
+        "languages": [
+          "Russian",
+          "Chinese Simplified",
+          "Portuguese (Brazil)",
+          "French",
+          "Spanish",
+          "Italian",
+          "Japanese",
+          "German",
+          "English"
+        ],
+        "mcmId": 74,
+        "mcmName": "Tenth Edition",
+        "mtgoCode": "10E",
+        "name": "Tenth Edition",
+        "releaseDate": "2007-07-13",
+        "totalSetSize": 508,
+        "type": "core"
+      }
+    }
+  }
+}

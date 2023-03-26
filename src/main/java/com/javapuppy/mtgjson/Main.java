@@ -1,7 +1,5 @@
 package com.javapuppy.mtgjson;
 
-import com.javapuppy.mtgjson.sets.SetConverter;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -16,7 +14,7 @@ public class Main {
             converter.convert(setFile);
         }
 
-        converter.addPrices(new File("AllPrices.json"));
+        converter.addPrices(new File("AllPrices1.json"), new File("AllPrices2.json"));
 
         converter.printCsv(new File("mtg-w-prices.csv"));
     }

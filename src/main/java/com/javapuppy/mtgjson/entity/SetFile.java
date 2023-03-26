@@ -1,6 +1,5 @@
-package com.javapuppy.mtgjson.sets;
+package com.javapuppy.mtgjson.entity;
 
-import com.javapuppy.mtgjson.Meta;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

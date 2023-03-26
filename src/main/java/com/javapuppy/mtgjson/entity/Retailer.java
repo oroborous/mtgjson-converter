@@ -1,4 +1,4 @@
-package com.javapuppy.mtgjson.sets;
+package com.javapuppy.mtgjson.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,4 +8,5 @@ import lombok.NoArgsConstructor;
 public class Retailer {
     private String currency;
     private RetailPrices retail;
+    private RetailPrices buylist;
 }

@@ -1,6 +1,5 @@
-package com.javapuppy.mtgjson.sets;
+package com.javapuppy.mtgjson.entity;
 
-import com.javapuppy.mtgjson.Meta;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,5 +9,5 @@ import java.util.Map;
 @NoArgsConstructor
 public class PriceFile {
     private Meta meta;
-    private Map<String, PriceHistory> data;
+    private Map<String, PriceHistory> data; // market is String, e.g. "cardkingdom"
 }

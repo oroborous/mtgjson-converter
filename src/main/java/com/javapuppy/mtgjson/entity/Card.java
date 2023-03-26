@@ -1,4 +1,4 @@
-package com.javapuppy.mtgjson.sets;
+package com.javapuppy.mtgjson.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,8 @@ public class Card {
     private String asciiName;
     private String[] attractionLights;
     private String[] availability;
-    private Double avgPrice;
+    private Double avgRetailPrice;
+    private Double avgBuylistPrice;
     private String[] boosterTypes;
     private String borderColor;
     private String[] cardParts;
@@ -81,14 +82,15 @@ public class Card {
     private String watermark;
 
     public static String getFileHeader() {
-        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
                 "uuid",
                 "title",
                 "color",
                 "numColors",
                 "type",
                 "edhrecRank",
-                "avgPrice",
+                "avgRetailPrice",
+                "avgBuylistPrice",
                 "manaValue",
                 "power",
                 "toughness",
@@ -99,14 +101,15 @@ public class Card {
 
     @Override
     public String toString() {
-        return String.format("%s,\"%s\",%s,%d,%s,%d,%f,%f,%s,%s,\"%s\",%s,%s",
+        return String.format("%s,\"%s\",%s,%d,%s,%d,%d,%f,%f,%s,%s,\"%s\",%s,%s",
                 uuid,
                 name,
                 colors.length == 1 ? colors[0] : (colors.length == 0 ? "Colorless" : "Multicolor"),
                 colors.length,
                 type,
                 edhrecRank,
-                avgPrice,
+                avgRetailPrice,
+                avgBuylistPrice,
                 manaValue,
                 power,
                 toughness,

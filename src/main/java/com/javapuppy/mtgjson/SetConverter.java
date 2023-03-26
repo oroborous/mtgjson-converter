@@ -3,18 +3,25 @@ package com.javapuppy.mtgjson;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.javapuppy.mtgjson.entity.*;
+import com.javapuppy.mtgjson.entity.cardfile.Card;
+import com.javapuppy.mtgjson.entity.cardfile.CardSet;
+import com.javapuppy.mtgjson.entity.cardfile.CardSetFile;
+import com.javapuppy.mtgjson.entity.pricefile.PriceFile;
+import com.javapuppy.mtgjson.entity.pricefile.PriceHistory;
+import com.javapuppy.mtgjson.entity.pricefile.Retailer;
+import com.javapuppy.mtgjson.entity.setfile.SetDetails;
+import com.javapuppy.mtgjson.entity.setfile.SetFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class SetConverter {
     private final Map<String, Card> cardMap = new HashMap<>();
+    private final Map<String, PriceHistory> priceMap = new HashMap<>();
+    public static final Map<String, String> setCodeToNameMap = new HashMap<>();
     private final ObjectMapper mapper = new ObjectMapper();
 
     public SetConverter() {
@@ -22,8 +29,15 @@ public class SetConverter {
         mapper.registerModule(new JavaTimeModule());
     }
 
+    public void loadSets(File file) throws IOException {
+        List<SetDetails> sets = mapper.readValue(file, SetFile.class).getData();
+        for (SetDetails set : sets) {
+            setCodeToNameMap.put(set.getCode(), set.getName());
+        }
+    }
+
     public void convert(File file) throws IOException {
-        CardSet cardSetObj = mapper.readValue(file, SetFile.class).getData();
+        CardSet cardSetObj = mapper.readValue(file, CardSetFile.class).getData();
 
         for (Card card : cardSetObj.getCards()) {
             cardMap.put(card.getUuid(), card);
@@ -33,8 +47,6 @@ public class SetConverter {
     }
 
     public void addPrices(File... files) throws IOException {
-        Map<String, PriceHistory> priceMap = new HashMap<>();
-
         for (File file : files) {
             Map<String, PriceHistory> fileMap = mapper.readValue(file, PriceFile.class).getData();
             for (String uuid : fileMap.keySet()) {
@@ -130,9 +142,54 @@ public class SetConverter {
         for (String cardToRemove : cardsToRemove) {
             cardMap.remove(cardToRemove);
         }
+        System.out.printf("%d cards remaining...%n", cardMap.size());
     }
 
-    public void printCsv(File file) {
+    public void printPriceCsv(File file) {
+        Set<String> dateSet = priceMap.values().stream()
+                .flatMap(priceHistory -> priceHistory.getPaper().values().stream())
+                .flatMap(retailer -> retailer.getRetail().getNormal().keySet().stream())
+                .collect(Collectors.toSet());
+        priceMap.values().stream()
+                .flatMap(priceHistory -> priceHistory.getPaper().values().stream())
+                .flatMap(retailer -> retailer.getBuylist().getNormal().keySet().stream())
+                .forEach(dateSet::add);
+        List<String> dateList = dateSet.stream().sorted().toList();
+
+        String headers = String.format("%s,%s,%s,%s",
+                "uuid",
+                "retailer",
+                "priceType",
+                String.join(",", dateList));
+        String lineFormat = "%s,%s,%s,";
+
+
+        try (PrintWriter writer = new PrintWriter(file)) {
+            writer.println(headers);
+            for (Map.Entry<String, PriceHistory> priceHistoryEntry : priceMap.entrySet()) {
+                String uuid = priceHistoryEntry.getKey();
+                for (Map.Entry<String, Retailer> retailerEntry : priceHistoryEntry.getValue().getPaper().entrySet()) {
+                    String retailer = retailerEntry.getKey();
+                    if (retailerEntry.getValue().getRetail() != null
+                            && retailerEntry.getValue().getRetail().getNormal() != null) {
+                        Map<String, Double> retailPrices = retailerEntry.getValue().getRetail().getNormal();
+                        String priceType = "retail";
+                        double[] prices = new double[dateList.size()];
+                        for (int i = 0; i < dateList.size(); i++) {
+                            prices[i] = retailPrices.getOrDefault(dateList.get(i), 0.);
+                        }
+                        writer.print(String.format(lineFormat, uuid, retailer, priceType));
+                        writer.println(Arrays.stream(prices).mapToObj(Double::toString).collect(Collectors.joining(",")));
+                    }
+
+                }
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    public void printCardCsv(File file) {
         try (PrintWriter writer = new PrintWriter(file)) {
             writer.println(Card.getFileHeader());
             for (Card card : cardMap.values())

@@ -16,6 +16,8 @@ public class Main {
 
         converter.addPrices(new File("AllPrices1.json"), new File("AllPrices2.json"));
 
+        converter.loadSets(new File("SetList.json"));
+
         converter.printCsv(new File("mtg-w-prices.csv"));
     }
 }

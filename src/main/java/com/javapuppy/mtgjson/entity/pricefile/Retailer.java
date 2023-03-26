@@ -1,4 +1,4 @@
-package com.javapuppy.mtgjson.entity;
+package com.javapuppy.mtgjson.entity.pricefile;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

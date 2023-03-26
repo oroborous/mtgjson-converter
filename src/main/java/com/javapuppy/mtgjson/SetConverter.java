@@ -19,9 +19,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class SetConverter {
-    private final Map<String, Card> cardMap = new HashMap<>();
+    private Map<String, Card> cardMap = new HashMap<>();
     private final Map<String, PriceHistory> priceMap = new HashMap<>();
-    public static final Map<String, String> setCodeToNameMap = new HashMap<>();
+    public static final Map<String, SetDetails> setDetailsMap = new HashMap<>();
     private final ObjectMapper mapper = new ObjectMapper();
 
     public SetConverter() {
@@ -32,7 +32,7 @@ public class SetConverter {
     public void loadSets(File file) throws IOException {
         List<SetDetails> sets = mapper.readValue(file, SetFile.class).getData();
         for (SetDetails set : sets) {
-            setCodeToNameMap.put(set.getCode(), set.getName());
+            setDetailsMap.put(set.getCode(), set);
         }
     }
 
@@ -116,12 +116,7 @@ public class SetConverter {
                                     .stream().mapToDouble(Double::doubleValue))
                             .average()
                             .orElse(0);
-                    if (avgPrice > 0) {
-                        cardMap.get(uuid).setAvgRetailPrice(avgPrice);
-                    } else {
-                        System.out.printf("Zero retail price. Removing %s%n", uuid);
-                        cardsToRemove.add(uuid);
-                    }
+                    cardMap.get(uuid).setAvgRetailPrice(avgPrice);
 
                     avgPrice = history.getPaper().values().stream()
                             .filter(ret -> ret.getCurrency().equals("USD"))
@@ -141,17 +136,44 @@ public class SetConverter {
         System.out.printf("Removing %d cards...%n", cardsToRemove.size());
         for (String cardToRemove : cardsToRemove) {
             cardMap.remove(cardToRemove);
+            priceMap.remove(cardToRemove);
         }
         System.out.printf("%d cards remaining...%n", cardMap.size());
+        System.out.printf("%d prices remaining...%n", priceMap.size());
+
+        cardsToRemove.clear();
+
+        // Remove prices that don't have cards in the card map
+        for (String uuid : priceMap.keySet()) {
+            if (!cardMap.containsKey(uuid)) {
+                cardsToRemove.add(uuid);
+            }
+        }
+        // Remove cards that don't have prices
+        for (String uuid : cardMap.keySet()) {
+            if (!priceMap.containsKey(uuid)) {
+                cardsToRemove.add(uuid);
+            }
+        }
+
+        System.out.printf("Removing %d cards...%n", cardsToRemove.size());
+        for (String cardToRemove : cardsToRemove) {
+            cardMap.remove(cardToRemove);
+            priceMap.remove(cardToRemove);
+        }
+        System.out.printf("%d cards remaining...%n", cardMap.size());
+        System.out.printf("%d prices remaining...%n", priceMap.size());
     }
 
     public void printPriceCsv(File file) {
         Set<String> dateSet = priceMap.values().stream()
                 .flatMap(priceHistory -> priceHistory.getPaper().values().stream())
+                .filter(retailer -> retailer.getRetail() != null && retailer.getRetail().getNormal() != null)
                 .flatMap(retailer -> retailer.getRetail().getNormal().keySet().stream())
                 .collect(Collectors.toSet());
         priceMap.values().stream()
                 .flatMap(priceHistory -> priceHistory.getPaper().values().stream())
+                .filter(retailer -> retailer.getBuylist() != null && retailer.getBuylist().getNormal() != null)
                 .flatMap(retailer -> retailer.getBuylist().getNormal().keySet().stream())
                 .forEach(dateSet::add);
         List<String> dateList = dateSet.stream().sorted().toList();
@@ -197,5 +219,7 @@ public class SetConverter {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        cardMap = null;
     }
 }

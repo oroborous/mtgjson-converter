@@ -18,6 +18,8 @@ public class Main {
 
         converter.loadSets(new File("SetList.json"));
 
-        converter.printCsv(new File("mtg-w-prices.csv"));
+        converter.printCardCsv(new File("mtg-cards.csv"));
+
+        converter.printPriceCsv(new File("mtg-prices.csv"));
     }
 }

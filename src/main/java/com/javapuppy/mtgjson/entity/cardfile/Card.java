@@ -1,6 +1,7 @@
 package com.javapuppy.mtgjson.entity.cardfile;
 
 import com.javapuppy.mtgjson.SetConverter;
+import com.javapuppy.mtgjson.entity.setfile.SetDetails;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,16 +24,11 @@ public class Card {
     private Double faceManaValue;
     private String faceName;
     private String hand;
-    private Boolean hasAlternativeDeckLimit;
-    private Boolean hasContentWarning;
-    private Boolean hasFoil;
-    private Boolean hasNonFoil;
     private Boolean isAlternative;
     private Boolean isFullArt;
     private Boolean isFunny;
     private Boolean isOnlineOnly;
     private Boolean isPromo;
-    private Boolean isRebalanced;
     private Boolean isReprint;
     private Boolean isStarter;
     private String[] keywords;
@@ -42,10 +38,7 @@ public class Card {
     private float manaValue;
     private String name;
     private String number;
-    private String[] originalPrintings;
-    private String originalReleaseDate;
     private String power;
-    private String[] printings;
     private String rarity;
     private String setCode;
     private String side;
@@ -77,6 +70,7 @@ public class Card {
 
     @Override
     public String toString() {
+        SetDetails setDetails = SetConverter.setDetailsMap.get(setCode);
         return String.format("%s,\"%s\",%s,%d,%s,%d,%f,%f,%f,%s,%s,\"%s\",%s,%s,%s,%s",
                 uuid,
                 name,
@@ -89,9 +83,9 @@ public class Card {
                 manaValue,
                 power,
                 toughness,
-                SetConverter.setCodeToNameMap.getOrDefault(setCode, setCode),
+                setDetails.getName(),
                 setCode,
-                originalReleaseDate,
+                setDetails.getReleaseDate(),
                 rarity,
                 artist);
     }

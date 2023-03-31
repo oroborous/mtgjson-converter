@@ -71,7 +71,7 @@ public class Card {
     @Override
     public String toString() {
         SetDetails setDetails = SetConverter.setDetailsMap.get(setCode);
-        return String.format("%s,\"%s\",%s,%d,%s,%d,%f,%f,%f,%s,%s,\"%s\",%s,%s,%s,%s",
+        return String.format("%s,\"%s\",%s,%d,%s,%d,%f,%f,%f,%s,%s,\"%s\",%s,%s,%s,\"%s\"",
                 uuid,
                 name,
                 colors.length == 1 ? colors[0] : (colors.length == 0 ? "Colorless" : "Multicolor"),

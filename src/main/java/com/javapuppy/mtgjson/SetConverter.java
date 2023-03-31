@@ -185,6 +185,7 @@ public class SetConverter {
                 String.join(",", dateList));
         String lineFormat = "%s,%s,%s,";
 
+        long lineCount = 1; // for header
 
         try (PrintWriter writer = new PrintWriter(file)) {
             writer.println(headers);
@@ -202,6 +203,7 @@ public class SetConverter {
                         }
                         writer.print(String.format(lineFormat, uuid, retailer, priceType));
                         writer.println(Arrays.stream(prices).mapToObj(Double::toString).collect(Collectors.joining(",")));
+                        lineCount++;
                     }
 
                 }
@@ -209,6 +211,11 @@ public class SetConverter {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        System.out.println(String.format("Columns: %d, Rows: %d, Cells: %d",
+                3 + dateList.size(),
+                lineCount,
+                (3 + dateList.size()) * lineCount));
     }
 
     public void printCardCsv(File file) {

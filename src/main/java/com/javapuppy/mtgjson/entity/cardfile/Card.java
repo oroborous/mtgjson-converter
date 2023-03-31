@@ -73,20 +73,20 @@ public class Card {
         SetDetails setDetails = SetConverter.setDetailsMap.get(setCode);
         return String.format("%s,\"%s\",%s,%d,%s,%d,%f,%f,%f,%s,%s,\"%s\",%s,%s,%s,\"%s\"",
                 uuid,
-                name,
+                name.replaceAll("\"", "\"\""),
                 colors.length == 1 ? colors[0] : (colors.length == 0 ? "Colorless" : "Multicolor"),
                 colors.length,
-                type,
-                edhrecRank,
+                type.contains(" —") ? type.substring(0, type.indexOf(" —")) : type,
+                edhrecRank == null ? -1 : edhrecRank,
                 avgRetailPrice,
                 avgBuylistPrice,
                 manaValue,
                 power,
                 toughness,
-                setDetails.getName(),
+                setDetails.getName().replaceAll("\"", "\"\""),
                 setCode,
                 setDetails.getReleaseDate(),
                 rarity,
-                artist);
+                artist == null ? "" : artist.replaceAll("\"", "\"\""));
     }
 }

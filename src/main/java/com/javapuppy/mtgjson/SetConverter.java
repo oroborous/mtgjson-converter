@@ -46,7 +46,7 @@ public class SetConverter {
         System.out.printf("Total cards: %d%n", cardMap.size());
     }
 
-    public void addPrices(File... files) throws IOException {
+    public Map<String, Card> addPrices(File... files) throws IOException {
         for (File file : files) {
             Map<String, PriceHistory> fileMap = mapper.readValue(file, PriceFile.class).getData();
             for (String uuid : fileMap.keySet()) {
@@ -163,6 +163,8 @@ public class SetConverter {
         }
         System.out.printf("%d cards remaining...%n", cardMap.size());
         System.out.printf("%d prices remaining...%n", priceMap.size());
+
+        return cardMap;
     }
 
     public void printPriceCsv(File file) {
@@ -212,16 +214,28 @@ public class SetConverter {
             ioe.printStackTrace();
         }
 
-        System.out.println(String.format("Columns: %d, Rows: %d, Cells: %d",
+        System.out.printf("Columns: %d, Rows: %d, Cells: %d%n",
                 3 + dateList.size(),
                 lineCount,
-                (3 + dateList.size()) * lineCount));
+                (3 + dateList.size()) * lineCount);
     }
 
     public void printCardCsv(File file) {
         try (PrintWriter writer = new PrintWriter(file)) {
             writer.println(Card.getFileHeader());
             for (Card card : cardMap.values())
+                writer.println(card.toString());
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+        cardMap = null;
+    }
+
+    public void printSetCsv(File file) {
+        try (PrintWriter writer = new PrintWriter(file)) {
+            writer.println(SetDetails.getFileHeader());
+            for (SetDetails card : setDetailsMap.values())
                 writer.println(card.toString());
         } catch (IOException ioe) {
             ioe.printStackTrace();

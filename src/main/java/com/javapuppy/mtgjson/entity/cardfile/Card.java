@@ -5,6 +5,8 @@ import com.javapuppy.mtgjson.entity.setfile.SetDetails;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Data
 @NoArgsConstructor
 public class Card {
@@ -47,6 +49,19 @@ public class Card {
     private String toughness;
     private String type;
     private String uuid;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Card card = (Card) o;
+        return uuid.equals(card.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid);
+    }
 
     public static String getFileHeader() {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",

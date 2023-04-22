@@ -13,6 +13,7 @@ import com.javapuppy.mtgjson.entity.setfile.SetDetails;
 import com.javapuppy.mtgjson.entity.setfile.SetFile;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -167,7 +168,100 @@ public class SetConverter {
         return cardMap;
     }
 
-    public void printPriceCsv(File file) {
+    public long printLongPriceCsv() throws FileNotFoundException {
+        String lineFormat = "%s,%s,%s,%s,%f";
+        long lineCount = 0;
+
+        double maxBytes = 1_000_000_000; // biggest string buffer for PGAdmin
+        String headers = String.format("%s,%s,%s,%s,%s",
+                "uuid",
+                "retailer",
+                "priceType",
+                "priceDate",
+                "price");
+
+        int fileNum = 0;
+
+        File priceFile = null;
+        PrintWriter writer = null;
+
+        for (Map.Entry<String, PriceHistory> priceHistoryEntry : priceMap.entrySet()) {
+
+            if (priceFile == null || priceFile.length() > maxBytes) {
+                fileNum++;
+                priceFile = new File(String.format("mtg-prices-%d.csv", fileNum));
+
+                if (writer != null) {
+                    writer.flush();
+                    writer.close();
+                }
+
+                writer = new PrintWriter(priceFile);
+                writer.println(headers);
+            }
+
+            String uuid = priceHistoryEntry.getKey();
+            for (Map.Entry<String, Retailer> retailerEntry : priceHistoryEntry.getValue().getPaper().entrySet()) {
+                String retailer = retailerEntry.getKey();
+                if (retailerEntry.getValue().getRetail() != null
+                        && retailerEntry.getValue().getRetail().getNormal() != null) {
+                    Map<String, Double> retailPrices = retailerEntry.getValue().getRetail().getNormal();
+                    String priceType = "retail";
+                    for (Map.Entry<String, Double> datePrice : retailPrices.entrySet()) {
+                        writer.println(String.format(lineFormat, uuid, retailer, priceType, datePrice.getKey(), datePrice.getValue()));
+                        lineCount++;
+                    }
+                }
+                if (retailerEntry.getValue().getBuylist() != null
+                        && retailerEntry.getValue().getBuylist().getNormal() != null) {
+                    Map<String, Double> retailPrices = retailerEntry.getValue().getBuylist().getNormal();
+                    String priceType = "buylist";
+                    for (Map.Entry<String, Double> datePrice : retailPrices.entrySet()) {
+                        writer.println(String.format(lineFormat, uuid, retailer, priceType, datePrice.getKey(), datePrice.getValue()));
+                        lineCount++;
+                    }
+                }
+            }
+        }
+
+        if (writer != null) {
+            writer.flush();
+            writer.close();
+        }
+
+        System.out.printf("Columns: %d, Rows: %d, Cells: %d%n",
+                5,
+                lineCount,
+                5 * lineCount);
+
+        return lineCount;
+    }
+
+    public void printCardCsv(File file) {
+        try (PrintWriter writer = new PrintWriter(file)) {
+            writer.println(Card.getFileHeader());
+            for (Card card : cardMap.values())
+                writer.println(card.toString());
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+        cardMap = null;
+    }
+
+    public void printSetCsv(File file) {
+        try (PrintWriter writer = new PrintWriter(file)) {
+            writer.println(SetDetails.getFileHeader());
+            for (SetDetails card : setDetailsMap.values())
+                writer.println(card.toString());
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+        cardMap = null;
+    }
+
+    public void printWidePriceCsv(File file) {
         Set<String> dateSet = priceMap.values().stream()
                 .flatMap(priceHistory -> priceHistory.getPaper().values().stream())
                 .filter(retailer -> retailer.getRetail() != null && retailer.getRetail().getNormal() != null)
@@ -218,29 +312,5 @@ public class SetConverter {
                 3 + dateList.size(),
                 lineCount,
                 (3 + dateList.size()) * lineCount);
-    }
-
-    public void printCardCsv(File file) {
-        try (PrintWriter writer = new PrintWriter(file)) {
-            writer.println(Card.getFileHeader());
-            for (Card card : cardMap.values())
-                writer.println(card.toString());
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-
-        cardMap = null;
-    }
-
-    public void printSetCsv(File file) {
-        try (PrintWriter writer = new PrintWriter(file)) {
-            writer.println(SetDetails.getFileHeader());
-            for (SetDetails card : setDetailsMap.values())
-                writer.println(card.toString());
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-
-        cardMap = null;
     }
 }
